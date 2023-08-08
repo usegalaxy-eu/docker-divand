@@ -102,7 +102,7 @@ USER root
 RUN julia --eval 'using Pkg; pkg"add PackageCompiler"'
 ADD DIVAnd_precompile_script.jl .
 ADD make_sysimg.sh .
-RUN ./make_sysimg.sh
+RUN chmod +x ./make_sysimg.sh && sh ./make_sysimg.sh
 RUN mkdir -p /home/jovyan/.local
 RUN mv sysimg_DIVAnd.so DIVAnd_precompile_script.jl make_sysimg.sh  DIVAnd_trace_compile.jl  /home/jovyan/.local
 RUN rm -f test.xml Water_body_Salinity.3Danl.nc Water_body_Salinity.4Danl.cdi_import_errors_test.csv Water_body_Salinity.4Danl.nc Water_body_Salinity2.4Danl.nc
