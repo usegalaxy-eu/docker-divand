@@ -78,7 +78,7 @@ RUN cd   /home/$NB_USER/;  \
 RUN mv /home/$NB_USER/Diva-Workshops-master/notebooks /home/$NB_USER
 RUN rm -r /home/$NB_USER/Diva-Workshops-master
 
-#USER jovyan
+USER jovyan
 ADD emacs /home/jovyan/.emacs
 RUN mkdir -p /home/jovyan/.julia/config
 ADD startup.jl /home/jovyan/.julia/config/startup.jl
@@ -92,17 +92,16 @@ RUN mkdir /data/Diva-Workshops-data
 RUN curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /data/Diva-Workshops-data -zxf -
 RUN ln -s /opt/julia-* /opt/julia
 
-##USER jovyan
+USER jovyan
 
 RUN julia -e 'using IJulia; IJulia.installkernel("Julia with 4 CPUs",env = Dict("JULIA_NUM_THREADS" => "4"))'
 
 
-USER root
 # Pre-compiled image with PackageCompiler
 RUN julia --eval 'using Pkg; pkg"add PackageCompiler"'
 ADD DIVAnd_precompile_script.jl .
 ADD make_sysimg.sh .
-RUN chmod +x ./make_sysimg.sh && sh ./make_sysimg.sh
+RUN ./make_sysimg.sh
 RUN mkdir -p /home/jovyan/.local
 RUN mv sysimg_DIVAnd.so DIVAnd_precompile_script.jl make_sysimg.sh  DIVAnd_trace_compile.jl  /home/jovyan/.local
 RUN rm -f test.xml Water_body_Salinity.3Danl.nc Water_body_Salinity.4Danl.cdi_import_errors_test.csv Water_body_Salinity.4Danl.nc Water_body_Salinity2.4Danl.nc
