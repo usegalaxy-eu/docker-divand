@@ -78,7 +78,7 @@ RUN cd   /home/$NB_USER/;  \
 RUN mv /home/$NB_USER/Diva-Workshops-master/notebooks /home/$NB_USER
 RUN rm -r /home/$NB_USER/Diva-Workshops-master
 
-USER jovyan
+#USER jovyan
 ADD emacs /home/jovyan/.emacs
 RUN mkdir -p /home/jovyan/.julia/config
 ADD startup.jl /home/jovyan/.julia/config/startup.jl
@@ -155,4 +155,3 @@ CMD ["bash", "/usr/local/bin/run_galaxy.sh"]
 USER root
 RUN chmod 777 /home/jovyan/ -R
 USER jovyan
-
