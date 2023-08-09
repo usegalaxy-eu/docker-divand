@@ -111,8 +111,6 @@ USER jovyan
 
 RUN curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /data/Diva-Workshops-data -zxf -
 RUN ln -s /opt/julia-* /opt/julia
-RUN julia -e 'using IJulia; IJulia.installkernel("Julia with 4 CPUs",env = Dict("JULIA_NUM_THREADS" => "4"))'
-
 
 # Pre-compiled image with PackageCompiler
 RUN julia --eval 'using Pkg; pkg"add PackageCompiler"'
@@ -122,8 +120,6 @@ RUN ./make_sysimg.sh
 RUN mkdir -p /home/jovyan/.local
 RUN mv sysimg_DIVAnd.so DIVAnd_precompile_script.jl make_sysimg.sh  DIVAnd_trace_compile.jl  /home/jovyan/.local
 RUN rm -f test.xml Water_body_Salinity.3Danl.nc Water_body_Salinity.4Danl.cdi_import_errors_test.csv Water_body_Salinity.4Danl.nc Water_body_Salinity2.4Danl.nc
-RUN julia -e 'using IJulia; IJulia.installkernel("Julia-DIVAnd precompiled", "--sysimage=/home/jovyan/.local/sysimg_DIVAnd.so")'
-RUN julia -e 'using IJulia; IJulia.installkernel("Julia-DIVAnd precompiled, 4 CPUs)", "--sysimage=/home/jovyan/.local/sysimg_DIVAnd.so",env = Dict("JULIA_NUM_THREADS" => "4"))'
 
 # ENV variables to replace conf file
 ENV DEBUG=false \
@@ -149,7 +145,6 @@ HEALTHCHECK --interval=30s --timeout=10s CMD /bin/healthcheck.sh
 # This should not be necessary anymore for julia 1.9
 # We are assuming the python is compiled with a newer libstdc++ than julia
 # (otherwise the file should not be removed)
-RUN ["/bin/sh","-c","rm /opt/julia-1.8.*/lib/julia/libstdc++.so.*"]
 
 WORKDIR /import
 
