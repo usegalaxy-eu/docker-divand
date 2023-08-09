@@ -8,11 +8,33 @@ MAINTAINER Alexander Barth <a.barth@ulg.ac.be>
 ENV DEBIAN_FRONTEND noninteractive
 USER root
 
-RUN apt-get update
-RUN apt-get install -y libnetcdf-dev netcdf-bin unzip
-RUN apt-get install -y ca-certificates curl libnlopt0 make gcc 
-RUN apt-get install -y emacs-nox git g++
+ADD run_galaxy.sh /usr/local/bin/run_galaxy.sh
 
+RUN apt-get -qq update && \
+    apt-get install -y \
+    net-tools \
+    libnetcdf-dev \
+    netcdf-bin \
+    unzip \
+    ca-certificates \
+    curl \
+    libnlopt0 \
+    make \
+    emacs-nox \
+    git \
+    g++ \
+    gcc \ 
+    procps && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# /import will be the universal mount-point for Jupyter
+# The Galaxy instance can copy in data that needs to be present to the Jupyter webserver
+RUN mkdir -p /import/jupyter/outputs/ && \
+    mkdir -p /import/jupyter/data && \
+    mkdir /export/ && \
+    chown -R $NB_USER:users /home/$NB_USER/ /import /export/
 
 # Set channels to (defaults) > bioconda > conda-forge
 RUN conda config --add channels conda-forge && \
@@ -24,11 +46,7 @@ ENV PYTHON /opt/conda/bin/python
 ENV LD_LIBRARY_PATH /opt/conda/lib/
 
     
-RUN conda install -c conda-forge ncurses
-RUN conda install -y ipywidgets
-RUN conda install -y matplotlib
-RUN conda install -c conda-forge jupyterlab-git
-RUN conda install -c conda-forge contourpy 
+RUN conda install -c conda-forge -y ncurses ipywidgets matplotlib jupyterlab-git contourpy 
 
 RUN wget -O /usr/share/emacs/site-lisp/julia-mode.el https://raw.githubusercontent.com/JuliaEditorSupport/julia-emacs/master/julia-mode.el
 
@@ -46,14 +64,14 @@ ENV JULIA_PACKAGES="CSV DataAssim DIVAnd DataStructures FFTW FileIO Glob HTTP IJ
 
 RUN julia --eval 'using Pkg; Pkg.add(split(ENV["JULIA_PACKAGES"]))'
 
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir bioblend galaxy-ie-helpers
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir \
+        bioblend \
+        galaxy-ie-helpers \
+        jupyterlab_hdf
 ADD ./get_notebook.py /get_notebook.py
 
 COPY ./ipython-profile.py /home/$NB_USER/.ipython/profile_default/startup/00-load.py
-
-
-RUN pip install jupyterlab_hdf
     
 # We can get away with just creating this single file and Jupyter will create the rest of the
 # profile for us.
@@ -87,13 +105,12 @@ RUN julia --eval 'using Pkg; pkg"precompile"'
 
 USER root
 # Example Data
-RUN mkdir /data
-RUN mkdir /data/Diva-Workshops-data
-RUN curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /data/Diva-Workshops-data -zxf -
-RUN ln -s /opt/julia-* /opt/julia
-
+RUN mkdir -p /data/Diva-Workshops-data && \
+    chown jovyan:jovyan /data -R
 USER jovyan
 
+RUN curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /data/Diva-Workshops-data -zxf -
+RUN ln -s /opt/julia-* /opt/julia
 RUN julia -e 'using IJulia; IJulia.installkernel("Julia with 4 CPUs",env = Dict("JULIA_NUM_THREADS" => "4"))'
 
 
@@ -122,20 +139,7 @@ ENV DEBUG=false \
 # @jupyterlab/google-drive  not yet supported
 
 USER root
-ADD run_galaxy.sh /usr/local/bin/run_galaxy.sh
 
-RUN apt-get -qq update && \
-    apt-get install -y net-tools procps && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# /import will be the universal mount-point for Jupyter
-# The Galaxy instance can copy in data that needs to be present to the Jupyter webserver
-RUN mkdir -p /import/jupyter/outputs/ && \
-    mkdir -p /import/jupyter/data && \
-    mkdir /export/ && \
-    chown -R $NB_USER:users /home/$NB_USER/ /import /export/
 
 #USER jovyan
 
