@@ -2,10 +2,9 @@
 
 # Docker image for DIVAnd - constructed for the use as Galaxy IT
 
-[QuPath](https://github.com/gher-uliege/DIVAnd.jl) DIVAnd (Data-Interpolating Variational Analysis in n dimensions) is now available in [Galaxy](https://usegalaxy.eu/root?tool_id=interactive_tool_divand).
+[DIVnd](https://github.com/gher-uliege/DIVAnd.jl) (Data-Interpolating Variational Analysis in n dimensions) is now available in [Galaxy](https://usegalaxy.eu/root?tool_id=interactive_tool_divand).
 
 ![DIVAnd in Galaxy](./diva.png)
-
 
 ### Run the image
 
