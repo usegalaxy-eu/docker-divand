@@ -61,10 +61,12 @@ RUN cd   /home/$NB_USER/;  \
     wget -O master.zip https://github.com/gher-ulg/Diva-Workshops/archive/master.zip; unzip master.zip; \
     rm /home/$NB_USER/master.zip && \
     mv /home/$NB_USER/Diva-Workshops-master/notebooks /home/$NB_USER && \
+    jupyter trust /home/$NB_USER/notebooks/*/*.ipynb && \
     rm -r /home/$NB_USER/Diva-Workshops-master
 
 USER root
 
+COPY startup.sh /startup.sh
 COPY startup.jl /home/$NB_USER/.julia/config/startup.jl
 COPY DIVAnd_precompile_script.jl /home/$NB_USER/
 COPY make_sysimg.sh /home/$NB_USER/
@@ -90,7 +92,13 @@ ENV DEBUG=false \
     REMOTE_HOST=none \
     GALAXY_URL=none
 
-#RUN curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /data/Diva-Workshops-data -zxf -
+RUN mkdir -p /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD && \
+    curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /home/$NB_USER/work/DIVAnd-Workshop -zxf - && \
+    # This is from the old startup script, some work needs to be done here ... I would not put the data into /data and then symlink later. We can put them into 
+    # /home/$NB_USER in the first place
+    #mkdir -p /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD
+    #ln -s /data/Diva-Workshops-data/WOD/* /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD/
+    #chown $NB_USER /work/DIVAnd-Workshop/Adriatic/WOD
 
 WORKDIR /import
 
