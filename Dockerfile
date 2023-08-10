@@ -65,7 +65,8 @@ RUN cd   /home/$NB_USER/;  \
     jupyter trust /home/$NB_USER/notebooks/*/*.ipynb && \
     rm -r /home/$NB_USER/Diva-Workshops-master
 
-RUN julia ./make_sysimg.sh && \
+RUN julia -e 'using IJulia; IJulia.installkernel("Julia with 4 CPUs", env = Dict("JULIA_NUM_THREADS" => "4"))' && \
+    julia ./make_sysimg.sh && \
     mv sysimg_DIVAnd.so DIVAnd_precompile_script.jl make_sysimg.sh DIVAnd_trace_compile.jl  /home/jovyan/.local && \
     rm -f test.xml Water_body_Salinity.3Danl.nc Water_body_Salinity.4Danl.cdi_import_errors_test.csv Water_body_Salinity.4Danl.nc Water_body_Salinity2.4Danl.nc
 
