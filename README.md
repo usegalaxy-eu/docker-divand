@@ -11,7 +11,7 @@
 You can start the container outside of Galaxy with:
 
 ```bash
-docker run -it  -p 8888:8888  quay.io/galaxy/divand-jupyterhub:galaxy-2023-08-08t0904-bag jupyter-lab bash
+docker run -it  -p 8888:8888  quay.io/galaxy/divand-jupyter-lab:latest jupyter-lab bash
 ```
 
 ### Configuration
