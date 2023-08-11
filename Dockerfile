@@ -84,6 +84,20 @@ ENV DEBUG=false \
 RUN mkdir -p /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD && \
     curl https://dox.ulg.ac.be/index.php/s/Px6r7MPlpXAePB2/download | tar -C /home/$NB_USER/work/DIVAnd-Workshop -zxf - && \
     ln -s /home/$NB_USER/work/DIVAnd-Workshop/WOD/* /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD/
+USER root
+
+RUN apt-get -qq update && \
+    apt-get install -y net-tools procps && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# /import will be the universal mount-point for Jupyter
+# The Galaxy instance can copy in data that needs to be present to the Jupyter webserver
+RUN mkdir -p /import/jupyter/outputs/ && \
+    mkdir -p /import/jupyter/data && \
+    mkdir /export/ && \
+    chown -R $NB_USER:users /home/$NB_USER/ /import /export/
 
 WORKDIR /import
 USER root
