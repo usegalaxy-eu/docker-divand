@@ -7,6 +7,8 @@ USER root
 
 RUN apt-get -qq update && \
     apt-get install -y \
+    net-tools \
+    procps \
     unzip \
     ca-certificates \
     curl && \
