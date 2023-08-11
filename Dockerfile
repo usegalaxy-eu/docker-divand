@@ -86,7 +86,7 @@ RUN mkdir -p /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD && \
     ln -s /home/$NB_USER/work/DIVAnd-Workshop/WOD/* /home/$NB_USER/work/DIVAnd-Workshop/Adriatic/WOD/
 
 WORKDIR /import
-
+USER root
 # Start Jupyter Notebook
 CMD /startup.sh
 
