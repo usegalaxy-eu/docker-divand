@@ -35,7 +35,7 @@ RUN mkdir -p /import/jupyter/outputs/ && \
 
 USER jovyan
 
-RUN JULIA_PACKAGES="CSV DataAssim DIVAnd DataStructures FFTW FileIO Glob HTTP IJulia ImageIO Images Interact Interpolations JSON Knet MAT Missings NCDatasets PackageCompiler PhysOcean PyCall PyPlot Roots SpecialFunctions StableRNGs VideoIO" \
+RUN JULIA_PACKAGES="CSV DataAssim DIVAnd DataStructures FFTW FileIO Glob HTTP IJulia ImageIO Images Interact Interpolations JSON Knet MAT Missings NCDatasets PackageCompiler PhysOcean PyCall PyPlot Roots SpecialFunctions StableRNGs VideoIO Pluto" \
     julia --eval 'using Pkg; Pkg.add(split(ENV["JULIA_PACKAGES"]))'
 
 RUN pip install --upgrade pip && \
